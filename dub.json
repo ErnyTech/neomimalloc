@@ -1,0 +1,54 @@
+{
+	"name": "neomimalloc",
+	"description": "Wrapper to use mimalloc in D with the support of high-level API std.experimental.allocator.",
+	"authors": [
+		"Ernesto Castellotti"
+	],
+	"copyright": "Copyright © 2019, Ernesto Castellotti <erny.castell@gmail.com>",
+	"license": "MPL-2.0",
+	"configurations": [
+		{
+			"name" : "standard",
+			"preBuildCommands-posix" : [
+				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=OFF .. && make"
+			],
+			"sourceFiles": [
+				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc.a"
+			]
+		},
+		{
+			"name" : "secure",
+			"preBuildCommands-posix" : [
+				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=OFF -DMI_SECURE=ON .. && make"
+			],
+			"sourceFiles": [
+				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc-secure.a"
+			]
+		},
+		{
+			"name" : "override-malloc",
+			"preBuildCommands-posix" : [
+				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=ON .. && make"
+			],
+			"sourceFiles": [
+				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc.a"
+			]
+		},
+		{
+			"name" : "override-malloc-secure",
+			"preBuildCommands-posix" : [
+				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=ON -DMI_SECURE=ON .. && make"
+			],
+			"sourceFiles": [
+				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc-secure.a"
+			]
+		},
+		{
+			"name" : "manual-link"
+		}
+	]
+}
