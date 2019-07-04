@@ -202,7 +202,7 @@ struct Mimallocator {
         }
 
         auto sizeOfP = mi_usable_size(p);
-        result = p[0 .. sizeOfP];
+        result = (cast(void*) p)[0 .. sizeOfP];
         return Ternary.yes;
     }
 
@@ -233,6 +233,6 @@ struct Mimallocator {
             return false;
         }
 
-        return mi_check_owned(b.ptr);
+        return mi_check_owned(p);
     }
 }
