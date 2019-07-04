@@ -68,7 +68,7 @@ extern(C) {
     alias mi_block_visit_fun = bool function(const(mi_heap_t)* heap, 
                                             const(mi_heap_area_t)* area, 
                                             void* block, size_t block_size, 
-                                            void* arg);
+                                            const(void)* arg);
 
     /**
      * Runtime options.
@@ -299,7 +299,7 @@ extern(C) {
      *
      * The returned size can be used to call mi_expand successfully. The returned size is always at least equal to the allocated size of p, and, in the current design, should be less than 16.7% more.
      */
-    @nogc pure @system nothrow size_t mi_usable_size(void* p);
+    @nogc pure @system nothrow size_t mi_usable_size(const(void)* p);
     
     /**
      * Return the used allocation size.
@@ -376,7 +376,7 @@ extern(C) {
      *
      * Some runtime systems use deferred free-ing, for example when using reference counting to limit the worst case free time. Such systems can register (re-entrant) deferred free function to free more memory on demand. When the force parameter is true all possible memory should be freed. The per-thread heartbeat parameter is monotonically increasing and guaranteed to be deterministic if the program allocates deterministically. The deferred_free function is guaranteed to be called deterministically after some number of allocations (regardless of freeing or available free memory). At most one deferred_free function can be active.
      */
-    @nogc @system nothrow void mi_register_deferred_free(mi_deferred_free_fun deferred_free);
+    @nogc @system nothrow void mi_register_deferred_free(const(mi_deferred_free_fun) deferred_free);
 
     /**
      * Allocate size bytes aligned by alignment.
@@ -602,7 +602,7 @@ extern(C) {
      * Returns:
      *      true if all areas and blocks were visited.
      */
-    @nogc pure @system nothrow bool mi_heap_visit_blocks(const(mi_heap_t)* heap, bool visit_all_blocks, mi_block_visit_fun visitor, void* arg);
+    @nogc pure @system nothrow bool mi_heap_visit_blocks(const(mi_heap_t)* heap, bool visit_all_blocks, mi_block_visit_fun visitor, const(void)* arg);
 
     /**
      * Set runtime behavior.
