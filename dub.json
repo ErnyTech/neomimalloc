@@ -11,7 +11,7 @@
 			"name" : "standard",
 			"preBuildCommands-posix" : [
 				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=OFF .. && make"
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && rm -rf build && mkdir build && cd build && cmake -DMI_OVERRIDE=OFF .. && make"
 			],
 			"sourceFiles": [
 				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc.a"
@@ -21,7 +21,7 @@
 			"name" : "secure",
 			"preBuildCommands-posix" : [
 				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=OFF -DMI_SECURE=ON .. && make"
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && rm -rf build && mkdir build && cd build && cmake -DMI_OVERRIDE=OFF -DMI_SECURE=ON .. && make"
 			],
 			"sourceFiles": [
 				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc-secure.a"
@@ -31,7 +31,7 @@
 			"name" : "override-malloc",
 			"preBuildCommands-posix" : [
 				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=ON .. && make"
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && rm -rf build && mkdir build && cd build && cmake -DMI_OVERRIDE=ON .. && make"
 			],
 			"sourceFiles": [
 				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc.a"
@@ -41,7 +41,7 @@
 			"name" : "override-malloc-secure",
 			"preBuildCommands-posix" : [
 				"cd $PACKAGE_DIR && git clone --recursive https://github.com/ErnyTech/neomimalloc || true",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir -p build && cd build && cmake -DMI_OVERRIDE=ON -DMI_SECURE=ON .. && make"
+				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && rm -rf build && mkdir build && cd build && cmake -DMI_OVERRIDE=ON -DMI_SECURE=ON .. && make"
 			],
 			"sourceFiles": [
 				"$PACKAGE_DIR/neomimalloc/source/mimalloc/build/libmimalloc-secure.a"
