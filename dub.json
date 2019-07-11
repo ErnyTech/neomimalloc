@@ -6,61 +6,8 @@
 	],
 	"copyright": "Copyright © 2019, Ernesto Castellotti <erny.castell@gmail.com>",
 	"license": "MPL-2.0",
-	"configurations": [
-		{
-			"name" : "standard",
-			"preBuildCommands-posix" : [
-				"cd $PACKAGE_DIR && rm -rf neomimalloc && git clone --recursive https://github.com/ErnyTech/neomimalloc",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir build && cd build && cmake -DMI_OVERRIDE=OFF .. && make"
-			],
-			"libs-posix" : [
-				":libmimalloc.a"
-			],
-			"lflags-posix" : [
-				"-L$PACKAGE_DIR/neomimalloc/source/mimalloc/build"
-			]
-		},
-		{
-			"name" : "secure",
-			"preBuildCommands-posix" : [
-				"cd $PACKAGE_DIR && rm -rf neomimalloc && git clone --recursive https://github.com/ErnyTech/neomimalloc",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir build && cd build && cmake -DMI_OVERRIDE=OFF -DMI_SECURE=ON .. && make"
-			],
-			"libs-posix" : [
-				":ibmimalloc-secure.a"
-			],
-			"lflags-posix" : [
-				"-L$PACKAGE_DIR/neomimalloc/source/mimalloc/build"
-			]
-		},
-		{
-			"name" : "override-malloc",
-			"preBuildCommands-posix" : [
-				"cd $PACKAGE_DIR && rm -rf neomimalloc && git clone --recursive https://github.com/ErnyTech/neomimalloc",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir build && cd build && cmake -DMI_OVERRIDE=ON .. && make"
-			],
-			"libs-posix" : [
-				":libmimalloc.a"
-			],
-			"lflags-posix" : [
-				"-L$PACKAGE_DIR/neomimalloc/source/mimalloc/build"
-			]
-		},
-		{
-			"name" : "override-malloc-secure",
-			"preBuildCommands-posix" : [
-				"cd $PACKAGE_DIR && rm -rf neomimalloc && git clone --recursive https://github.com/ErnyTech/neomimalloc",
-				"cd $PACKAGE_DIR/neomimalloc/source/mimalloc && mkdir build && cd build && cmake -DMI_OVERRIDE=ON -DMI_SECURE=ON .. && make"
-			],
-			"libs-posix" : [
-				":ibmimalloc-secure.a"
-			],
-			"lflags-posix" : [
-				"-L$PACKAGE_DIR/neomimalloc/source/mimalloc/build"
-			]
-		},
-		{
-			"name" : "manual-link"
-		}
-	]
+	"systemDependencies" : "libc and thread support (e.g. glibc and pthread), to build also needs for cmake and a C toolchain",
+	"dependencies": {
+        "libmimalloc-sys": "==1.0.3"
+	}
 }
