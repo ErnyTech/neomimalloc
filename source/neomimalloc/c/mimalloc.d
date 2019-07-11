@@ -77,11 +77,12 @@ extern(C) {
         mi_option_page_reset = 0,       /** Reset page memory when it becomes free. */
         mi_option_cache_reset = 1,      /** Reset segment memory when a segment is cached. */
         mi_option_pool_commit = 2,      /** Commit segments in large pools. */
-        mi_option_secure = 3,           
-        mi_option_show_stats = 4,       /** Print statistics to stderr when the program is done. */
-        mi_option_show_errors = 5,      /** Print error messages to stderr. */
-        mi_option_verbose = 6,          /** Print verbose messages to stderr. */
-        _mi_option_last = 7
+        mi_option_large_os_pages = 3,   /** Use large os pages */
+        mi_option_secure = 4,           
+        mi_option_show_stats = 5,       /** Print statistics to stderr when the program is done. */
+        mi_option_show_errors = 6,      /** Print error messages to stderr. */
+        mi_option_verbose = 7,          /** Print verbose messages to stderr. */
+        _mi_option_last = 8
 }
 
     /**
@@ -174,32 +175,6 @@ extern(C) {
      *      Pointer to newly allocated zero initialized memory, or NULL if out of memory.
      */
     @nogc pure @system nothrow void* mi_zalloc(size_t size);
-    
-    /**
-     * Reallocate memory to newsize bytes, with extra memory initialized to zero.
-     * 
-     * Params:
-     *      p = Pointer to a previously allocated block (or NULL).
-     *      newsize = The new required size in bytes.
-     *
-     * Returns:
-     *      A pointer to a re-allocated block of newsize bytes, or NULL if out of memory.
-     *
-     * If the newsize is larger than the original allocated size of p, the extra bytes are initialized to zero.
-     */
-    @nogc pure @system nothrow void* mi_rezalloc(void* p, size_t newsize);
-
-    /**
-     * Re-allocate memory to newsize bytes.
-     * 
-     * Params:
-     *      p = pointer to previously allocated memory (or NULL).
-     *      newsize = the new required size in bytes.
-     *
-     * Returns:
-     *      pointer to the re-allocated memory of newsize bytes, or NULL if out of memory. If NULL is returned, the pointer p is not freed. Otherwise the original pointer is either freed or returned as the reallocated result (in case it fits in-place with the new size). If the pointer p is NULL, it behaves as mi_malloc(newsize). If newsize is larger than the original size allocated for p, the bytes after size are uninitialized.
-     */
-    @nogc pure @system nothrow void* mi_recalloc(void* p, size_t count, size_t size);
 
     /**
      * Try to re-allocate memory to newsize bytes in place.
@@ -339,6 +314,12 @@ extern(C) {
      */
     @nogc @system nothrow void mi_stats_reset();
     
+    
+    /**
+     * Get mimalloc version
+     */
+    @nogc pure @system nothrow int mi_version();
+    
     /**
      * Initialize mimalloc on a process
      */
@@ -436,26 +417,6 @@ extern(C) {
      * Re-allocate memory to newsize bytes aligned by alignment at a specified offset.
      */
     @nogc pure @system nothrow void* mi_realloc_aligned_at(void* p, size_t newsize, size_t alignment, size_t offset);
-    
-    /**
-     * Reallocate memory to newsize bytes, with extra memory initialized to zero aligned by alignment.
-     */
-    @nogc pure @system nothrow void* mi_rezalloc_aligned(void* p, size_t newsize, size_t alignment);
-    
-   /**
-     * Reallocate memory to newsize bytes, with extra memory initialized to zero aligned by alignment at a specified offset.
-     */
-    @nogc pure @system nothrow void* mi_rezalloc_aligned_at(void* p, size_t newsize, size_t alignment, size_t offset);
-    
-    /**
-     * Re-allocate memory to newsize bytes aligned by alignment.
-     */
-    @nogc pure @system nothrow void* mi_recalloc_aligned(void* p, size_t count, size_t size, size_t alignment);
-    
-    /**
-     * Re-allocate memory to newsize bytes aligned by alignment at a specified offset.
-     */
-    @nogc pure @system nothrow void* mi_recalloc_aligned_at(void* p, size_t count, size_t size, size_t alignment, size_t offset);
 
     /**
      * Create a new heap that can be used for allocation.
@@ -535,6 +496,21 @@ extern(C) {
      * Allocate a small object in a specific heap.
      */
     @nogc pure @system nothrow void* mi_heap_malloc_small(mi_heap_t* heap, size_t size);
+    
+    /**
+     * Re-allocate memory to newsize bytes in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_realloc(mi_heap_t* heap, void* p, size_t newsize);
+    
+    /**
+     * Re-allocate memory to count elements of size bytes in a specific heap.
+     */
+    @nogc pure @system nothrow  void* mi_heap_reallocn(mi_heap_t* heap, void* p, size_t count, size_t size);
+    
+    /**
+     * Re-allocate memory to newsize bytes in a specific heap.
+     */
+    @nogc pure @system nothrow  void* mi_heap_reallocf(mi_heap_t* heap, void* p, size_t newsize);
 
     /**
      * Duplicate a string in a specific heap.
@@ -550,6 +526,46 @@ extern(C) {
      * Resolve a file path name using a specific heap to allocate the result.
      */
     @nogc pure @system nothrow char* mi_heap_realpath(mi_heap_t* heap, const(char)* fname, char* resolved_name);
+    
+    /**
+     * Allocate size bytes aligned by alignment in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_malloc_aligned(mi_heap_t* heap, size_t size, size_t alignment);
+    
+    /**
+     * Allocate size bytes aligned by alignment at a specified offset in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_malloc_aligned_at(mi_heap_t* heap, size_t size, size_t alignment, size_t offset);
+    
+    /**
+     * Allocate zero-initialized size bytes aligned by alignment in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_zalloc_aligned(mi_heap_t* heap, size_t size, size_t alignment);
+    
+    /**
+     * Allocate zero-initialized size bytes aligned by alignment at a specified offset in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_zalloc_aligned_at (mi_heap_t* heap, size_t size, size_t alignment, size_t offset);
+    
+    /**
+     * Allocate zero-initialized count elements of size bytes aligned by alignment in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_calloc_aligned(mi_heap_t* heap, size_t count, size_t size, size_t alignment);
+    
+    /**
+     * Allocate zero-initialized count elements of size bytes aligned by alignment at a specified offset in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_calloc_aligned_at(mi_heap_t* heap, size_t count, size_t size, size_t alignment, size_t offset);
+    
+    /**
+     * Re-allocate memory to newsize bytes aligned by alignment in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_realloc_aligned(mi_heap_t* heap, void* p, size_t newsize, size_t alignment);
+    
+    /**
+     * Re-allocate memory to newsize bytes aligned by alignment at a specified offset in a specific heap.
+     */
+    @nogc pure @system nothrow void* mi_heap_realloc_aligned_at(mi_heap_t* heap, void* p, size_t newsize, size_t alignment, size_t offset);
 
     /**
      * Does a heap contain a pointer to a previously allocated block?
@@ -633,4 +649,81 @@ extern(C) {
      * Set runtime behavior.
      */
     @nogc @system nothrow void mi_option_set_default(mi_option_t option, c_long value);
+    
+    /**
+     * Re-allocate memory to newsize bytes.
+     * 
+     * Params:
+     *      p = pointer to previously allocated memory (or NULL).
+     *      newsize = the new required size in bytes.
+     *
+     * Returns:
+     *      pointer to the re-allocated memory of newsize bytes, or NULL if out of memory. If NULL is returned, the pointer p is not freed. Otherwise the original pointer is either freed or returned as the reallocated result (in case it fits in-place with the new size). If the pointer p is NULL, it behaves as mi_malloc(newsize). If newsize is larger than the original size allocated for p, the bytes after size are uninitialized.
+     */
+    @nogc pure @system nothrow void* mi_recalloc(void* p, size_t count, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow size_t mi_malloc_size(const(void)* p);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow size_t mi_malloc_usable_size(const(void)* p);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow size_t mi_cfree(void* p);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow int mi_posix_memalign(void** p, size_t alignment, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow int mi__posix_memalign(void** p, size_t alignment, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_memalign(size_t alignment, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_valloc(size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_pvalloc(size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_aligned_alloc(size_t alignment, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_reallocarray(void* p, size_t count, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void mi_free_size(void* p, size_t size);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void mi_free_size_aligned(void* p, size_t size, size_t alignment);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void mi_free_aligned(void* p, size_t alignment);
 }
