@@ -73,15 +73,15 @@ extern(C) {
     /**
      * Runtime options.
      */
-    enum mi_option_t {
-        mi_option_page_reset = 0,       /** Reset page memory when it becomes free. */
-        mi_option_cache_reset = 1,      /** Reset segment memory when a segment is cached. */
-        mi_option_pool_commit = 2,      /** Commit segments in large pools. */
-        mi_option_large_os_pages = 3,   /** Use large os pages */
-        mi_option_secure = 4,           
-        mi_option_show_stats = 5,       /** Print statistics to stderr when the program is done. */
-        mi_option_show_errors = 6,      /** Print error messages to stderr. */
-        mi_option_verbose = 7,          /** Print verbose messages to stderr. */
+    enum mi_option_t {     
+        mi_option_show_stats = 0,       /** Print statistics to stderr when the program is done. */
+        mi_option_show_errors = 1,      /** Print error messages to stderr. */
+        mi_option_verbose = 2,          /** Print verbose messages to stderr. */
+        mi_option_page_reset = 3,       /** Experimental: Reset page memory when it becomes free. */
+        mi_option_cache_reset = 4,      /** Experimental: Reset segment memory when a segment is cached. */
+        mi_option_pool_commit = 5,      /** Experimental: Commit segments in large pools. */
+        mi_option_large_os_pages = 6,   /** Experimental: Use large os pages */
+        mi_option_secure = 7,           /** Experimental*/
         _mi_option_last = 8
 }
 
@@ -726,4 +726,24 @@ extern(C) {
      * mi prefixed implementations of various posix, unix, and C++ allocation functions
      */
     @nogc pure @system nothrow void mi_free_aligned(void* p, size_t alignment);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system void* mi_new(size_t n);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system void* mi_new_aligned(size_t n, size_t alignment);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_new_nothrow(size_t n);
+    
+    /**
+     * mi prefixed implementations of various posix, unix, and C++ allocation functions
+     */
+    @nogc pure @system nothrow void* mi_new_aligned_nothrow(size_t n, size_t alignment);
 }
