@@ -8,6 +8,6 @@
 	"license": "MPL-2.0",
 	"systemDependencies" : "libc and thread support (e.g. glibc and pthread), to build also needs for cmake and a C toolchain",
 	"dependencies": {
-        "libmimalloc-sys": "==1.0.3"
+        "libmimalloc-sys": "==1.0.5"
 	}
 }
