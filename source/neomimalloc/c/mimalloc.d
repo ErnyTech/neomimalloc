@@ -77,11 +77,11 @@ extern(C) {
         mi_option_show_stats = 0,       /** Print statistics to stderr when the program is done. */
         mi_option_show_errors = 1,      /** Print error messages to stderr. */
         mi_option_verbose = 2,          /** Print verbose messages to stderr. */
-        mi_option_page_reset = 3,       /** Experimental: Reset page memory when it becomes free. */
-        mi_option_cache_reset = 4,      /** Experimental: Reset segment memory when a segment is cached. */
-        mi_option_pool_commit = 5,      /** Experimental: Commit segments in large pools. */
-        mi_option_large_os_pages = 6,   /** Experimental: Use large os pages */
-        mi_option_secure = 7,           /** Experimental*/
+        mi_option_secure = 3,           /** Experimental*/
+        mi_option_pool_commit = 4,      /** Experimental: Commit segments in large pools. */
+        mi_option_large_os_pages = 5,   /** Experimental: Use large os pages */
+        mi_option_page_reset = 6,       /** Experimental: Reset page memory when it becomes free. */
+        mi_option_cache_reset = 7,      /** Experimental: Reset segment memory when a segment is cached. */
         _mi_option_last = 8
 }
 
@@ -620,6 +620,11 @@ extern(C) {
      */
     @nogc pure @system nothrow bool mi_heap_visit_blocks(const(mi_heap_t)* heap, bool visit_all_blocks, mi_block_visit_fun visitor, const(void)* arg);
 
+    /**
+     * Inspect the heap at runtime.
+     */
+    @nogc pure @system nothrow bool mi_is_in_heap_region(const(void)* p);
+    
     /**
      * Set runtime behavior.
      */
